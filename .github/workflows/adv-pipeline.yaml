@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: dotnet build */**/*.sln --configuration Release --no-restore
       - name: Test
-        run: dotnet test */**/*.Tests.csproj --no-restore --no-build --verbosity normal
+        run: dotnet test */**/*.Tests.csproj --no-restore --no-build --verbosity normal --logger:"trx;LogFilePrefix=testResults"
       - name: Publish
         run: dotnet publish */**/*.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=Non/p:DebugType=None /p:DebugSymbols=false
       - name: Upload artifact
