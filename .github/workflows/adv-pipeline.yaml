@@ -1,5 +1,7 @@
 name: Adventure works DevOps automation
 on:
+  workflow_dispatch:
+  pull_request:
   push:
     branches:
       - main
