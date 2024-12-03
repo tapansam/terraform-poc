@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adv.Web", "Adv.Web\Adv.Web.csproj", "{A305445F-702A-4AC2-BB1C-62C38236A779}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A305445F-702A-4AC2-BB1C-62C38236A779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A305445F-702A-4AC2-BB1C-62C38236A779}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A305445F-702A-4AC2-BB1C-62C38236A779}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A305445F-702A-4AC2-BB1C-62C38236A779}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
