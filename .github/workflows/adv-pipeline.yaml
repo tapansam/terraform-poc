@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - main
+env:
+  SOLUTION_NAME: src/advapp/advapp.sln
+  AZURE_WEBAPP_PACKAGE_PATH: artifacts
+  AZURE_WEBAPP_RUNTIME: "DOTNETCORE:8.0"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,13 +20,13 @@ jobs:
           sudo apt-get install -y dotnet-sdk-8.0
           cd src/advapp
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore **/*.sln
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build **/*.sln --configuration Release --no-restore
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test **/*.Tests.csproj --no-restore --no-build --verbosity normal
       - name: Publish
-        run: dotnet publish -c Release -o ./artifacts --no-build
+        run: dotnet publish **/*.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=Non/p:DebugType=None /p:DebugSymbols=false
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
