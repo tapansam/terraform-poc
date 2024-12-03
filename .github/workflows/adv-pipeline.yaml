@@ -22,11 +22,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore */**/*.sln
       - name: Build
-        run: dotnet build **/*.sln --configuration Release --no-restore
+        run: dotnet build */**/*.sln --configuration Release --no-restore
       - name: Test
-        run: dotnet test **/*.Tests.csproj --no-restore --no-build --verbosity normal
+        run: dotnet test */**/*.Tests.csproj --no-restore --no-build --verbosity normal
       - name: Publish
-        run: dotnet publish **/*.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=Non/p:DebugType=None /p:DebugSymbols=false
+        run: dotnet publish */**/*.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=Non/p:DebugType=None /p:DebugSymbols=false
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
