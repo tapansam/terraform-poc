@@ -20,7 +20,7 @@ jobs:
           sudo apt-get install -y dotnet-sdk-8.0
           cd src/advapp
       - name: Restore dependencies
-        run: dotnet restore **/*.sln
+        run: dotnet restore */**/*.sln
       - name: Build
         run: dotnet build **/*.sln --configuration Release --no-restore
       - name: Test
