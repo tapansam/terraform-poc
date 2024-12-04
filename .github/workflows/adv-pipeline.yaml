@@ -10,7 +10,7 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: artifacts
   AZURE_WEBAPP_RUNTIME: "DOTNETCORE:8.0"
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: dotnet build */**/*.sln --configuration Release --no-restore /p:DebugType=None /p:DebugSymbols=false
       - name: Test
-        run: dotnet test src/advapp/Adv.Tests/Adv.Tests.csproj --no-restore --verbosity normal --logger:"trx;LogFilePrefix=testResults"
+        run: dotnet test src/advapp/Adv.Tests/Adv.Tests.csproj -c Release --no-restore --no-build --verbosity normal --logger:"trx;LogFilePrefix=testResults"
       - name: Publish
         run: dotnet publish src/advapp/Adv.Web/Adv.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=None /p:DebugSymbols=false
       - name: Upload artifact
