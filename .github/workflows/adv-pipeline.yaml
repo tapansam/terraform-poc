@@ -18,14 +18,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y dotnet-sdk-8.0
+          ls
       - name: Restore dependencies
         run: dotnet restore */**/*.sln
       - name: Build
-        run: dotnet build */**/*.sln --configuration Release --no-restore
+        run: dotnet build */**/*.sln --configuration Release --no-restore /p:DebugType=None /p:DebugSymbols=false
       - name: Test
         run: dotnet test src/advapp/Adv.Tests/Adv.Tests.csproj --no-restore --verbosity normal --logger:"trx;LogFilePrefix=testResults"
       - name: Publish
-        run: dotnet publish **/*.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=Non/p:DebugType=None /p:DebugSymbols=false
+        run: dotnet publish **/Adv.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=None /p:DebugSymbols=false
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
