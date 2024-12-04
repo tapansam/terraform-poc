@@ -33,7 +33,7 @@ jobs:
           name: artifacts
           path: artifacts
   deploy:
-    needs: build
+    needs: build_and_test
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
