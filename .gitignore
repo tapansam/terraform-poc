@@ -401,3 +401,5 @@ notes.txt
 
 .terraform
 *.lock.hcl
+*.tfstate
+*.backup
