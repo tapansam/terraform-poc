@@ -26,7 +26,7 @@ jobs:
       - name: Test
         run: dotnet test src/advapp/Adv.Tests/Adv.Tests.csproj --no-restore --verbosity normal --logger:"trx;LogFilePrefix=testResults"
       - name: Publish
-        run: dotnet publish **/Adv.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=None /p:DebugSymbols=false
+        run: dotnet publish src/advapp/Adv.Web/Adv.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=None /p:DebugSymbols=false
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
