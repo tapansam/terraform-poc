@@ -1,8 +1,14 @@
 name: Adventure works DevOps automation
 on:
+  workflow_dispatch:
+  pull_request:
   push:
     branches:
       - main
+env:
+  SOLUTION_NAME: src/advapp/advapp.sln
+  AZURE_WEBAPP_PACKAGE_PATH: artifacts
+  AZURE_WEBAPP_RUNTIME: "DOTNETCORE:8.0"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,15 +18,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y dotnet-sdk-8.0
-          cd src/advapp
+          ls
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore */**/*.sln
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build */**/*.sln --configuration Release --no-restore /p:DebugType=None /p:DebugSymbols=false
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test src/advapp/Adv.Tests/Adv.Tests.csproj --no-restore --verbosity normal --logger:"trx;LogFilePrefix=testResults"
       - name: Publish
-        run: dotnet publish -c Release -o ./artifacts --no-build
+        run: dotnet publish src/advapp/Adv.Web/Adv.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=None /p:DebugSymbols=false
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
