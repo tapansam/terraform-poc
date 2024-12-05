@@ -62,7 +62,7 @@ jobs:
       id: plan
       run: |
         terraform plan -no-color -input=false \
-        -var "subscription_id=${{secrets.AZURE_SUBSCRIPTION_ID}}"\
+        -var "subscription_id=${{secrets.AZURE_SUBSCRIPTION_ID}}" \
         -var "resource_group_name=${{secrets.AZURE_RESOURCE_GROUP_NAME}}" \
         -var "env=dev"
         
