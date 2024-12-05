@@ -40,7 +40,7 @@ resource "azurerm_linux_virtual_machine" "adv" {
   size                = "Standard_F2"
   admin_username      = "adminuser"
   network_interface_ids = [
-    azurerm_network_interface.example.id,
+    azurerm_network_interface.adv.id,
   ]
 
   admin_ssh_key {
