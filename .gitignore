@@ -403,3 +403,4 @@ notes.txt
 *.lock.hcl
 *.tfstate
 *.backup
+*.lock.info
