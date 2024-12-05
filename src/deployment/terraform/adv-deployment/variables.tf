@@ -8,7 +8,8 @@ variable "env" {
 }
 
 variable "subscription_id" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "resource_group_name" {
