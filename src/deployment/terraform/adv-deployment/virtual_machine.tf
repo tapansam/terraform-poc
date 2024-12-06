@@ -67,6 +67,7 @@ resource "azurerm_network_security_rule" "https" {
 resource "azurerm_subnet_network_security_group_association" "adv" {
   subnet_id                 = azurerm_subnet.adv.id
   network_security_group_id = azurerm_network_security_group.adv.id
+
 }
 
 resource "azurerm_public_ip" "adv" {
@@ -91,6 +92,7 @@ resource "azurerm_network_interface" "adv" {
   }
 
 }
+
 
 resource "tls_private_key" "main" {
   algorithm = "RSA"
@@ -123,4 +125,11 @@ resource "azurerm_linux_virtual_machine" "adv" {
     sku       = "18.04-LTS"
     version   = "latest"
   }
+}
+
+resource "local_file" "ssh_pvt_key" {
+  filename = "adv.pem"
+  content  = <<EOF
+${tls_private_key.main.private_key_pem}
+EOF
 }
