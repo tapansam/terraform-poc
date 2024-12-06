@@ -16,6 +16,59 @@ resource "azurerm_subnet" "adv" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
+resource "azurerm_network_security_group" "adv" {
+  name                = module.naming.network_security_group.name
+  location            = data.azurerm_resource_group.adv.location
+  resource_group_name = data.azurerm_resource_group.adv.name
+}
+
+resource "azurerm_network_security_rule" "ssh" {
+  name                        = "ssh"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = data.azurerm_resource_group.adv.name
+  network_security_group_name = azurerm_network_security_group.adv.name
+}
+
+resource "azurerm_network_security_rule" "http" {
+  name                        = "http"
+  priority                    = 200
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "80"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = data.azurerm_resource_group.adv.name
+  network_security_group_name = azurerm_network_security_group.adv.name
+}
+
+resource "azurerm_network_security_rule" "https" {
+  name                        = "https"
+  priority                    = 300
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "443"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = data.azurerm_resource_group.adv.name
+  network_security_group_name = azurerm_network_security_group.adv.name
+}
+
+resource "azurerm_subnet_network_security_group_association" "adv" {
+  subnet_id                 = azurerm_subnet.adv.id
+  network_security_group_id = azurerm_network_security_group.adv.id
+}
+
 resource "azurerm_public_ip" "adv" {
   name                = module.naming.public_ip.name
   location            = data.azurerm_resource_group.adv.location
@@ -36,6 +89,7 @@ resource "azurerm_network_interface" "adv" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.adv.id
   }
+
 }
 
 resource "tls_private_key" "main" {
