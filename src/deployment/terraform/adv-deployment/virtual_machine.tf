@@ -16,6 +16,15 @@ resource "azurerm_subnet" "adv" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
+resource "azurerm_public_ip" "adv" {
+  name                = module.naming.public_ip.name
+  location            = data.azurerm_resource_group.adv.location
+  resource_group_name = data.azurerm_resource_group.adv.name
+  allocation_method   = "Static"
+  sku                 = "Basic"
+  ip_version          = "IPv4"
+}
+
 resource "azurerm_network_interface" "adv" {
   name                = module.naming.network_interface.name
   location            = data.azurerm_resource_group.adv.location
@@ -25,6 +34,7 @@ resource "azurerm_network_interface" "adv" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.adv.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.adv.id
   }
 }
 

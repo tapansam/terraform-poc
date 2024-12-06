@@ -4,8 +4,7 @@ variable "prefix" {
 }
 
 variable "azure_subscription_id" {
-  type    = string
-  default = "ad9d0529-49bf-459a-86b2-dcb6fcbf9f3d"
+  type = string
 }
 
 variable "location" {
@@ -37,4 +36,15 @@ variable "use_managed_identity" {
   type        = bool
   default     = true
   description = "If selected, this option will create and configure a user assigned managed identity in the subscription instead of an AzureAD service principal."
+}
+
+variable "dns_zone" {
+  type = object({
+    name = string,
+    rg   = string
+  })
+  default = {
+    name = "uttamgolds.in"
+    rg   = "rg-central-india-core-resources"
+  }
 }
