@@ -137,7 +137,7 @@ jobs:
       - name: Publish
         run: dotnet publish src/advapp/Adv.Web/Adv.Web.csproj -c Release -o ./artifacts --no-build /p:DebugType=None /p:DebugSymbols=false
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts
           path: artifacts

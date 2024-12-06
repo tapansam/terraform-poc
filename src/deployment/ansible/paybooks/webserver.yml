@@ -1,0 +1,28 @@
+---
+- name: Configure web server for .NET core application
+  hosts: all
+  become: true
+  tasks:
+    - name: Install .NET Core SDK
+      ansible.builtin.apt:
+        name: dotnet-sdk-8.0
+        state: present
+
+    - name: Copy .NET Core application files
+      ansible.builtin.copy:
+        src: /path/to/your/application
+        dest: /var/www/advapp
+        mode: 0755
+
+    - name: Configure Nginx to serve .NET Core application
+      ansible.builtin.template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/sites-available/default
+      notify:
+        - Restart Nginx
+
+  handlers:
+    - name: Restart Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
