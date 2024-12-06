@@ -17,3 +17,17 @@ variable "resource_group_name" {
   sensitive = true
 }
 
+variable "github_token" {
+  type      = string
+  sensitive = true
+}
+
+variable "github_organisation_target" {
+  type    = string
+  default = "tapansam"
+}
+
+variable "github_repository" {
+  type    = string
+  default = "terraform-poc"
+}

@@ -27,6 +27,7 @@ variable "github_repository" {
   type    = string
   default = "terraform-poc"
 }
+
 variable "environments" {
   type    = list(string)
   default = ["dev", "test", "prod"]
