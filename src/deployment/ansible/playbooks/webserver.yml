@@ -1,0 +1,29 @@
+---
+- name: Configure web server for .NET core application
+  hosts: adv
+  become: true
+  tasks:
+    - name: Install .NET runtime
+      ansible.builtin.apt:
+        name: dotnet-runtime-8.0
+        update_cache: true
+        state: present
+
+  #   - name: Copy .NET Core application files
+  #     ansible.builtin.copy:
+  #       src: /path/to/your/application
+  #       dest: /var/www/advapp
+  #       mode: 0755
+
+  #   - name: Configure Nginx to serve .NET Core application
+  #     ansible.builtin.template:
+  #       src: nginx.conf.j2
+  #       dest: /etc/nginx/sites-available/default
+  #     notify:
+  #       - Restart Nginx
+
+  # handlers:
+  #   - name: Restart Nginx
+  #     ansible.builtin.service:
+  #       name: nginx
+  #       state: reloaded

@@ -405,3 +405,4 @@ notes.txt
 *.backup
 *.lock.info
 *.pem
+.temp/
