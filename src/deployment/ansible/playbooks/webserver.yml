@@ -8,16 +8,19 @@
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: true
+
     - name: Install .NET runtime
       ansible.builtin.apt:
         name:
           - dotnet-runtime-8.0
           - aspnetcore-runtime-8.0
         state: present
+
     - name: Install ASP.NET Core runtime
       ansible.builtin.apt:
         name: aspnetcore-runtime-8.0
         state: present
+
     - name: Install Nginx
       ansible.builtin.apt:
         name: nginx
@@ -56,16 +59,3 @@
       ansible.builtin.systemd:
         state: started
         name: kestrel-advapp
-
-  #   - name: Copy .NET Core application files
-  #     ansible.builtin.copy:
-  #       src: /path/to/your/application
-  #       dest: /var/www/advapp
-  #       mode: 0755
-
-  #   - name: Configure Nginx to serve .NET Core application
-  #     ansible.builtin.template:
-  #       src: nginx.conf.j2
-  #       dest: /etc/nginx/sites-available/default
-  #     notify:
-  #       - Restart Nginx
