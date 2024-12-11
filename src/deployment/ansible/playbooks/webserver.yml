@@ -48,7 +48,7 @@
 
     - name: Copy application binaries
       ansible.builtin.copy:
-        src: ../../../../artifacts/
+        src: ./artifacts/
         dest: /var/www/advapp
         owner: www-data
         group: www-data
