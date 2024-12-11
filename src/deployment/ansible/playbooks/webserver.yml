@@ -1,0 +1,81 @@
+---
+- name: Configure web server for .NET core application
+  hosts: adv
+  become: true
+  vars:
+    adv_domain: yourdomain.com
+    email: email@adventureworks.com
+    webroot_path: "/var/www/advapp"
+    certbot_executable_path: "/usr/bin/certbot"
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install .NET runtime
+      ansible.builtin.apt:
+        name:
+          - dotnet-runtime-8.0
+          - aspnetcore-runtime-8.0
+        state: present
+
+    - name: Install ASP.NET Core runtime
+      ansible.builtin.apt:
+        name: aspnetcore-runtime-8.0
+        state: present
+
+    - name: Install Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+
+    - name: Install Certbot and it’s Nginx plugin
+      ansible.builtin.apt:
+        name:
+          - certbot
+          - python3-certbot-nginx
+        state: present
+
+    - name: Create application user
+      ansible.builtin.user:
+        name: www-data
+        group: www-data
+
+    - name: Create app directory
+      ansible.builtin.file:
+        path: /var/www/advapp
+        state: directory
+
+    - name: Copy application binaries
+      ansible.builtin.copy:
+        src: ../../../../artifacts/
+        dest: /var/www/advapp
+        owner: www-data
+        group: www-data
+        mode: 0644
+
+    - ansible.builtin.template:
+        src: nginx-server.j2
+        dest: /etc/nginx/sites-available/default
+    - name: Retart nginx to reload server configuration
+      ansible.builtin.command: nginx -s reload
+
+    - name: Copy systemd service file
+      ansible.builtin.copy:
+        src: kestrel-advapp.service
+        dest: /etc/systemd/system/kestrel-advapp.service
+
+    - name: Start systemtl service
+      ansible.builtin.systemd:
+        state: started
+        name: kestrel-advapp
+
+    - name: Generate the SSL certificate
+      ansible.builtin.command: "{{ certbot_executable_path }} --nginx -d {{ adv_domain }} --non-interactive --agree-tos --email {{ email }}"
+
+    - name: Set up automatic renewal
+      ansible.builtin.cron:
+        name: "Certbot automatic renewal"
+        job: "{{ certbot_executable_path }} renew --quiet"
+        minute: "11"
+        hour: "11"

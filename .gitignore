@@ -404,3 +404,6 @@ notes.txt
 *.tfstate
 *.backup
 *.lock.info
+*.pem
+.temp/
+*.hosts

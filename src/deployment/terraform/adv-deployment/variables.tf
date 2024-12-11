@@ -31,3 +31,10 @@ variable "github_repository" {
   type    = string
   default = "terraform-poc"
 }
+
+variable "dns_zone" {
+  type = object({
+    name = string,
+    rg   = string
+  })
+}

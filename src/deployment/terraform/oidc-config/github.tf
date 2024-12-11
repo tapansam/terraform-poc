@@ -64,3 +64,11 @@ resource "github_actions_environment_secret" "backend_azure_storage_account_cont
   secret_name     = "BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME"
   plaintext_value = azurerm_storage_container.adv[each.value].name
 }
+
+resource "github_actions_environment_secret" "github_pattoken" {
+  for_each        = { for env in var.environments : env => env }
+  repository      = data.github_repository.adv.name
+  environment     = github_repository_environment.adv[each.value].environment
+  secret_name     = "PAT_TOKEN_GIT_INTEGRATION"
+  plaintext_value = var.github_token
+}
