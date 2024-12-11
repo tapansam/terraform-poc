@@ -7,6 +7,7 @@
     email: email@adventureworks.com
     webroot_path: "/var/www/advapp"
     certbot_executable_path: "/usr/bin/certbot"
+    artifact_path: "../../../../artifacts/"
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
@@ -48,7 +49,7 @@
 
     - name: Copy application binaries
       ansible.builtin.copy:
-        src: ./artifacts/
+        src: "{{ artifact_path }}"
         dest: /var/www/advapp
         owner: www-data
         group: www-data
@@ -57,6 +58,7 @@
     - ansible.builtin.template:
         src: nginx-server.j2
         dest: /etc/nginx/sites-available/default
+        
     - name: Retart nginx to reload server configuration
       ansible.builtin.command: nginx -s reload
 
