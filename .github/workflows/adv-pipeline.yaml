@@ -230,5 +230,5 @@ jobs:
             --inventory adv.hosts
             --extra-vars adv_domain=$ADV_DOMAIN
             --extra-vars email=$LETSENCRYPT_EMAIL
-            --extra-vars artifact_path=${GITHUB_WORKSPACE}/artifacts/
+            --extra-vars "artifact_path=${{ github.workspace }}/artifacts/"
             --verbose
