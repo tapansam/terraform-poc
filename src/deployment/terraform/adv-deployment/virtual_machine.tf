@@ -126,10 +126,3 @@ resource "azurerm_linux_virtual_machine" "adv" {
     version   = "latest"
   }
 }
-
-resource "local_file" "ssh_pvt_key" {
-  filename = "adv.pem"
-  content  = <<EOF
-${tls_private_key.main.private_key_pem}
-EOF
-}

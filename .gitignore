@@ -406,3 +406,4 @@ notes.txt
 *.lock.info
 *.pem
 .temp/
+*.hosts
