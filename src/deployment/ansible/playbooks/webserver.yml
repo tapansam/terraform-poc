@@ -4,6 +4,9 @@
   become: true
   vars:
     adv_domain: dev.uttamgolds.in
+    email: tapansam@gmail.com
+    webroot_path: "/var/www/advapp"
+    certbot_executable_path: "/usr/bin/certbot"
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
@@ -24,6 +27,13 @@
     - name: Install Nginx
       ansible.builtin.apt:
         name: nginx
+        state: present
+
+    - name: Install Certbot and it’s Nginx plugin
+      ansible.builtin.apt:
+        name:
+          - certbot
+          - python3-certbot-nginx
         state: present
 
     - name: Create application user
@@ -59,3 +69,13 @@
       ansible.builtin.systemd:
         state: started
         name: kestrel-advapp
+
+    - name: Generate the SSL certificate
+      ansible.builtin.command: "{{ certbot_executable_path }} --nginx -d {{ adv_domain }} --non-interactive --agree-tos --email {{ email }}"
+
+    - name: Set up automatic renewal
+      ansible.builtin.cron:
+        name: "Certbot automatic renewal"
+        job: "{{ certbot_executable_path }} renew --quiet"
+        minute: "11"
+        hour: "11"
