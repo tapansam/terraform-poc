@@ -162,9 +162,6 @@ jobs:
         with:
           name: artifacts
           path: artifacts
-      
-      - name: Check artifact folder
-        run: ls ./artifacts
 
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -193,6 +190,10 @@ jobs:
           -var "github_token=${{secrets.PAT_TOKEN_GIT_INTEGRATION}}" \
           -var "dns_zone={\"name\":\"$DNS_ZONE\",\"rg\":\"$DNS_ZONE_RG_NAME\"}" \
           -var "env=dev"
+      
+      - name: Check artifact folder
+        run: ls ${{ github.workspace }}
+
       - name: Run playbook to configure webserver
         uses: dawidd6/action-ansible-playbook@v2
         env:
