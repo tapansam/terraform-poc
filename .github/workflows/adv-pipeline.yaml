@@ -227,7 +227,7 @@ jobs:
           # Optional, additional flags to pass to ansible-playbook
           options: |
             --inventory adv.hosts
-            --extra-vars adv_domain=$ADV_DOMAIN
-            --extra-vars email=$LETSENCRYPT_EMAIL
+            --extra-vars adv_domain=${{secrets.DNS_ZONE}}
+            --extra-vars email=${{secrets.LETSENCRYPT_EMAIL}}
             --extra-vars "artifact_path=${{ github.workspace }}/artifacts/"
             --verbose
