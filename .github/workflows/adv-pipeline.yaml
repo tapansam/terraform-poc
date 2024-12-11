@@ -161,9 +161,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifacts
+          path: artifacts
       
       - name: Check artifact folder
-        run: ls -l
+        run: ls ./artifacts
 
       - name: Checkout Code
         uses: actions/checkout@v3
