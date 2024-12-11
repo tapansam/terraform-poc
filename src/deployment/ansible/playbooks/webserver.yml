@@ -3,8 +3,8 @@
   hosts: adv
   become: true
   vars:
-    adv_domain: dev.uttamgolds.in
-    email: tapansam@gmail.com
+    adv_domain: yourdomain.com
+    email: email@adventureworks.com
     webroot_path: "/var/www/advapp"
     certbot_executable_path: "/usr/bin/certbot"
   tasks:
