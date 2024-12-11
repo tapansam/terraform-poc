@@ -62,11 +62,15 @@ jobs:
 
       - name: Terraform Plan
         id: plan
+        env:
+          DNS_ZONE: ${{secrets.DNS_ZONE}}
+          DNS_ZONE_RG_NAME: ${{secrets.DNS_ZONE_RG_NAME}}
         run: |
           terraform plan -no-color -input=false \
           -var "subscription_id=${{secrets.AZURE_SUBSCRIPTION_ID}}" \
           -var "resource_group_name=${{secrets.AZURE_RESOURCE_GROUP_NAME}}" \
           -var "github_token=${{secrets.PAT_TOKEN_GIT_INTEGRATION}}" \
+          -var "dns_zone={\"name\":\"$DNS_ZONE\",\"rg\":\"$DNS_ZONE_RG_NAME\"}" \
           -var "env=dev"
 
         continue-on-error: true
@@ -184,7 +188,7 @@ jobs:
           -var "subscription_id=${{secrets.AZURE_SUBSCRIPTION_ID}}" \
           -var "resource_group_name=${{secrets.AZURE_RESOURCE_GROUP_NAME}}" \
           -var "github_token=${{secrets.PAT_TOKEN_GIT_INTEGRATION}}" \
-          -var "dns_zone={\"name\":\"$DNS_ZONE\",\"rg\":\"$DNS_ZONE_RG_NAME\"}"
+          -var "dns_zone={\"name\":\"$DNS_ZONE\",\"rg\":\"$DNS_ZONE_RG_NAME\"}" \
           -var "env=dev"
       - name: Run playbook to configure webserver
         uses: dawidd6/action-ansible-playbook@v2
