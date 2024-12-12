@@ -189,8 +189,8 @@ jobs:
           -var "dns_zone={\"name\":\"$DNS_ZONE\",\"rg\":\"$DNS_ZONE_RG_NAME\"}" \
           -var "env=dev"
       
-      - name: Check artifact folder
-        run: ls ${{ github.workspace }}
+      # - name: Check artifact folder
+      #   run: ls ${{ github.workspace }}
 
       - name: Run playbook to configure webserver
         uses: dawidd6/action-ansible-playbook@v2
