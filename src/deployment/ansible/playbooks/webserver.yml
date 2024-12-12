@@ -9,7 +9,8 @@
     certbot_executable_path: "/usr/bin/certbot"
     artifact_path: "../../../../artifacts/"
     package_name: "adv_package"
-    app_user: www-data
+    app_user: "www-data"
+    adv_app_runtime: "Adv.Web.dll"
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
@@ -69,8 +70,8 @@
         dest: "{{ webroot_path }}"
         remote_src: true
         owner: "{{ app_user }}"
-        group: "{{ app_user }}"
-        mode: "0644"
+        group: "{{ app_user }}"        
+        mode: 0644
 
     - name: Delete archive on server
       ansible.builtin.file:
@@ -90,17 +91,22 @@
     #     owner: www-data
     #     group: www-data
     #     mode: 0644
+    - name: Create symbolic link 
+      ansible.builtin.file:
+        src: "/etc/nginx/sites-available/default"
+        dest: "/etc/nginx/sites-enabled/default"
+        state: link
 
     - ansible.builtin.template:
         src: nginx-server.j2
-        dest: /etc/nginx/sites-available/default
+        dest: "/etc/nginx/sites-available/default"
 
     - name: Retart nginx to reload server configuration
       ansible.builtin.command: nginx -s reload
 
     - name: Copy systemd service file
-      ansible.builtin.copy:
-        src: kestrel-advapp.service
+      ansible.builtin.template:
+        src: kestrel-advapp.service.j2
         dest: /etc/systemd/system/kestrel-advapp.service
 
     - name: Start systemtl service

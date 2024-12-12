@@ -2,14 +2,14 @@
 Description=Adventure Works app running on Linux
 
 [Service]
-WorkingDirectory=/var/www/advapp
-ExecStart=/usr/bin/dotnet /var/www/advapp/Adv.Web.dll
+WorkingDirectory={{ webroot_path }}
+ExecStart=/usr/bin/dotnet ./{{ adv_app_runtime }}
 Restart=always
 # Restart service after 10 seconds if the dotnet service crashes:
 RestartSec=10
 KillSignal=SIGINT
 SyslogIdentifier=dotnet-advapp
-User=www-data
+User={{ app_user }}
 Environment=ASPNETCORE_ENVIRONMENT=Production
 Environment=DOTNET_NOLOGO=true
 

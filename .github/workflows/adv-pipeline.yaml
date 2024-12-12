@@ -230,4 +230,3 @@ jobs:
             --extra-vars adv_domain=dev.${{secrets.DNS_ZONE}}
             --extra-vars email=${{secrets.LETSENCRYPT_EMAIL}}
             --extra-vars "artifact_path=${{ github.workspace }}/artifacts/"
-            --verbose
