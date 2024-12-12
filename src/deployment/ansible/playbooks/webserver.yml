@@ -8,6 +8,8 @@
     webroot_path: "/var/www/advapp"
     certbot_executable_path: "/usr/bin/certbot"
     artifact_path: "../../../../artifacts/"
+    package_name: "adv_package"
+    app_user: www-data
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
@@ -39,26 +41,60 @@
 
     - name: Create application user
       ansible.builtin.user:
-        name: www-data
-        group: www-data
+        name: "{{ app_user }}"
+        group: "{{ app_user }}"
 
-    - name: Create app directory
+    - name: Ensures app directory exists on server
       ansible.builtin.file:
-        path: /var/www/advapp
+        path: "{{ webroot_path }}"
         state: directory
+        recurse: true
 
-    - name: Copy application binaries
+    - name: Archive the application binaries
+      community.general.archive:
+        path: "{{ artifact_path }}"
+        dest: "{{ package_name }}.gz"
+      delegate_to: localhost
+      become: false
+
+    - name: Move the archive to server
       ansible.builtin.copy:
-        src: "{{ artifact_path }}"
-        dest: /var/www/advapp
-        owner: www-data
-        group: www-data
-        mode: 0644
+        src: "{{ package_name }}.gz"
+        dest: "{{ webroot_path }}/.."
+        force: true
+
+    - name: Unarchive on server
+      ansible.builtin.unarchive:
+        src: "{{ webroot_path }}/../{{ package_name }}.gz"
+        dest: "{{ webroot_path }}"
+        remote_src: true
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0644"
+
+    - name: Delete archive on server
+      ansible.builtin.file:
+        path: "{{ webroot_path }}/../{{ package_name }}.gz"
+        state: absent
+
+    - name: Delete archive locally
+      ansible.builtin.file:
+        path: "{{ package_name }}.gz"
+        state: absent
+      delegate_to: localhost
+      become: false
+    # - name: Copy application binaries
+    #   ansible.builtin.copy:
+    #     src: "{{ artifact_path }}"
+    #     dest: /var/www/advapp
+    #     owner: www-data
+    #     group: www-data
+    #     mode: 0644
 
     - ansible.builtin.template:
         src: nginx-server.j2
         dest: /etc/nginx/sites-available/default
-        
+
     - name: Retart nginx to reload server configuration
       ansible.builtin.command: nginx -s reload
 
