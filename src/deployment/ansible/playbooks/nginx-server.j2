@@ -17,3 +17,9 @@ server {
       proxy_set_header   X-Forwarded-Proto $scheme;
   }
 }
+
+server {
+    listen   80 default_server;
+    # listen [::]:80 default_server deferred;
+    return   444;
+}
