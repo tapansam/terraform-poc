@@ -230,3 +230,87 @@ jobs:
             --extra-vars adv_domain=dev.${{secrets.DNS_ZONE}}
             --extra-vars email=${{secrets.LETSENCRYPT_EMAIL}}
             --extra-vars "artifact_path=${{ github.workspace }}/artifacts/"
+  deploy-to-prod:
+    if: github.event_name != 'pull_request' && contains(toJson(github.event.commits), 'Initial commit') == false
+    needs: build_and_publish
+    runs-on: ubuntu-latest
+    environment: prod
+    env:
+      ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+      ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+      ARM_USE_AZUREAD: true # This environment variable tells the backend to use AzureAD auth rather than trying a create a key. It means we can limit the permissions applied to the storage account and container to least priviledge: https://developer.hashicorp.com/terraform/language/settings/backends/azurerm#use_azuread_auth
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts
+          path: artifacts
+      - name: HashiCorp - Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        id: init
+        working-directory: src/deployment/terraform/adv-deployment
+        run: |
+          terraform init \
+          -backend-config="resource_group_name=${{secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME}}" \
+          -backend-config="storage_account_name=${{secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME}}" \
+          -backend-config="container_name=${{secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME}}"
+
+      - name: Terraform Apply
+        working-directory: src/deployment/terraform/adv-deployment
+        env:
+          DNS_ZONE: ${{secrets.DNS_ZONE}}
+          DNS_ZONE_RG_NAME: ${{secrets.DNS_ZONE_RG_NAME}}
+        run: |
+          terraform apply -auto-approve \
+          -var "subscription_id=${{secrets.AZURE_SUBSCRIPTION_ID}}" \
+          -var "resource_group_name=${{secrets.AZURE_RESOURCE_GROUP_NAME}}" \
+          -var "github_token=${{secrets.PAT_TOKEN_GIT_INTEGRATION}}" \
+          -var "dns_zone={\"name\":\"$DNS_ZONE\",\"rg\":\"$DNS_ZONE_RG_NAME\"}" \
+          -var "env=prod"
+      
+      # - name: Check artifact folder
+      #   run: ls ${{ github.workspace }}
+
+      - name: Run playbook to configure webserver
+        uses: dawidd6/action-ansible-playbook@v2
+        env:
+          LETSENCRYPT_EMAIL: ${{secrets.LETSENCRYPT_EMAIL}}
+          ADV_DOMAIN: ${{secrets.DNS_ZONE}}
+        with:
+          # Required, playbook filepath
+          playbook: webserver.yml
+          # Optional, directory where playbooks live
+          directory: ./src/deployment/ansible/playbooks
+          # Optional, ansible configuration file content (ansible.cfg)
+          # configuration: |
+          #   [defaults]
+          #   callbacks_enabled = ansible.posix.profile_tasks, ansible.posix.timer
+          #   stdout_callback = yaml
+          #   nocows = false
+          # Optional, SSH private key
+          # key: ${{secrets.SSH_PRIVATE_KEY}}
+          # Optional, literal inventory file contents
+          # inventory: |
+          #   [all]
+          #   example.com
+
+          #   [group1]
+          #   example.com
+          # Optional, SSH known hosts file content
+          # known_hosts: |
+          #   example.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+          # Optional, encrypted vault password
+          # vault_password: ${{secrets.VAULT_PASSWORD}}
+          # Optional, galaxy requirements filepath
+          # requirements: galaxy-requirements.yml
+          # Optional, additional flags to pass to ansible-playbook
+          options: |
+            --inventory adv.hosts
+            --extra-vars adv_domain=prod.${{secrets.DNS_ZONE}}
+            --extra-vars email=${{secrets.LETSENCRYPT_EMAIL}}
+            --extra-vars "artifact_path=${{ github.workspace }}/artifacts/"
