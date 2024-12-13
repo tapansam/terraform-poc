@@ -49,6 +49,9 @@
       ansible.builtin.file:
         path: "{{ webroot_path }}"
         state: directory
+        owner: "{{app_user}}"
+        group: "{{app_user}}"
+        mode: "0755"
         recurse: true
 
     - name: Archive the application binaries
@@ -71,7 +74,7 @@
         remote_src: true
         owner: "{{ app_user }}"
         group: "{{ app_user }}"        
-        mode: 0644
+        mode: "0755"
 
     - name: Delete archive on server
       ansible.builtin.file:
