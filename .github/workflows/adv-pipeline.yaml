@@ -232,7 +232,7 @@ jobs:
             --extra-vars "artifact_path=${{ github.workspace }}/artifacts/"
   deploy-to-prod:
     if: github.event_name != 'pull_request' && contains(toJson(github.event.commits), 'Initial commit') == false
-    needs: build_and_publish
+    needs: deploy-to-dev
     runs-on: ubuntu-latest
     environment: prod
     env:
